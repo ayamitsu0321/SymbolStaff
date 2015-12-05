@@ -25,6 +25,21 @@ public class ItemSymbol extends Item {
         super();
     }
 
+    public String getUnlocalizedName(ItemStack stack) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        if (nbt != null && nbt.hasKey("Category")) {
+            String category = nbt.getString("Category");
+
+            if (category.equals(Symbol.SymbolCategory.TARGET.name())) {
+                return super.getUnlocalizedName() + "." + "target";
+            } else if (category.equals(Symbol.SymbolCategory.EFFECT.name())) {
+                return super.getUnlocalizedName() + "." + "effect";
+            }
+        }
+
+        return super.getUnlocalizedName(stack);
+    }
+
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
         if (stack.hasTagCompound()) {

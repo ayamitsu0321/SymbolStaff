@@ -38,7 +38,7 @@ public class ContainerSymbolCase extends Container {
             }
         };
 
-        this.addSlotToContainer(new Slot(caseInventory, 0, 16, 17) {
+        this.addSlotToContainer(new Slot(caseInventory, 0, 24, 34) {
                                     // SymbolStaffが3つめのスロット内にある状態で、いれるアイテムがTargetSymbolの場合にtrueを返し、いれられる
                                     @Override
                                     public boolean isItemValid(ItemStack stack) {
@@ -68,7 +68,7 @@ public class ContainerSymbolCase extends Container {
                                     }
                                 }
         );
-        this.addSlotToContainer(new Slot(caseInventory, 1, 56, 17) {
+        this.addSlotToContainer(new Slot(caseInventory, 1, 56, 34) {
                                     // SymbolStaffが3つめのスロット内にある状態で、いれるアイテムがEffectSymbolの場合にtrueを返し、いれられる
                                     @Override
                                     public boolean isItemValid(ItemStack stack) {
@@ -209,6 +209,6 @@ public class ContainerSymbolCase extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return true;
+        return playerIn.isEntityAlive();
     }
 }

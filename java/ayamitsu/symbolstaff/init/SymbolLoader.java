@@ -6,6 +6,7 @@ import ayamitsu.symbolstaff.symbol.TargetSymbol;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityMinecartCommandBlock;
 import net.minecraft.entity.ai.EntityMinecartMobSpawner;
 import net.minecraft.entity.boss.EntityDragon;
@@ -20,6 +21,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -2106,7 +2108,14 @@ public final class SymbolLoader {
             public boolean onRightClickTarget(EntityPlayer player, MovingObjectPosition target, ItemStack staffItem) {
                 if (target.entityHit != null) {
                     Entity entity = target.entityHit;
-                    entity.setDead();
+
+                    if (entity instanceof EntityLiving) {
+                        EntityLiving living = (EntityLiving)entity;
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
+                    } else {
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
+                    }
+
                     return true;
                 }
 
@@ -2119,7 +2128,14 @@ public final class SymbolLoader {
             public boolean onLeftClickTarget(EntityPlayer player, MovingObjectPosition target, ItemStack staffItem) {
                 if (target.entityHit != null) {
                     Entity entity = target.entityHit;
-                    entity.setDead();
+
+                    if (entity instanceof EntityLiving) {
+                        EntityLiving living = (EntityLiving)entity;
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
+                    } else {
+                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
+                    }
+
                     return true;
                 }
 
@@ -2142,6 +2158,8 @@ public final class SymbolLoader {
                 return false;
             }
         });
+
+
     }
 
     private static void addTargetSymbolSimpleBllock(final Block block) {

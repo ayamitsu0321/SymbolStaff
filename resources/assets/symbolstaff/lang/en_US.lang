@@ -1,4 +1,6 @@
 item.symbolstaff.symbol.name=Symbol
+item.symbolstaff.symbol.target.name=Target Symbol
+item.symbolstaff.symbol.effect.name=Effect Symbol
 item.symbolstaff.symbolstaff.name=Symbol Staff
 item.symbolstaff.symbolcase.name=Symbol Case
 itemGroup.symbolstaff=Symbol Staff
