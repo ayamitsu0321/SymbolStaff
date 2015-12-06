@@ -12,10 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,8 +32,8 @@ public class ItemSymbolStaff extends Item {
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
         if (stack.hasTagCompound()) {
             NBTTagCompound nbt = stack.getTagCompound();
-            tooltip.add("Target: " + nbt.getString("Target"));
-            tooltip.add("Effect: " + nbt.getString("Effect"));
+            tooltip.add("Target: " + StatCollector.translateToLocal(nbt.getString("Target")));
+            tooltip.add("Effect: " + StatCollector.translateToLocal(nbt.getString("Effect")));
         }
     }
 
@@ -93,7 +90,7 @@ public class ItemSymbolStaff extends Item {
 
                 if (effectSymbol != null) {
                     // event
-                    return effectSymbol.onRightClickTarget(playerIn, mov, stack);
+                    return effectSymbol.onRightClickBlock(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
                 }
             }
         }
@@ -125,7 +122,7 @@ public class ItemSymbolStaff extends Item {
 
                 if (effectSymbol != null) {
                     // event
-                    return effectSymbol.onRightClickTarget(playerIn, mov, stack);
+                    return effectSymbol.onRightClickEntity(stack, playerIn, target);
                 }
             }
         }
@@ -155,7 +152,7 @@ public class ItemSymbolStaff extends Item {
 
                 if (effectSymbol != null) {
                     // event
-                    effectSymbol.onLeftClickTarget(player, mov, stack);
+                    effectSymbol.onLeftClickEntity(stack, player, entity);
                 }
             }
         }

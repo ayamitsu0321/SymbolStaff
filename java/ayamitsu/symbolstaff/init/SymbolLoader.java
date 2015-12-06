@@ -7,6 +7,7 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EntityMinecartCommandBlock;
 import net.minecraft.entity.ai.EntityMinecartMobSpawner;
 import net.minecraft.entity.boss.EntityDragon;
@@ -21,7 +22,9 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemColored;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -2105,57 +2108,76 @@ public final class SymbolLoader {
     private static void addEffectSymbols() {
         addEffectSymbol(new EffectSymbol("RightClickKill") {
             @Override
-            public boolean onRightClickTarget(EntityPlayer player, MovingObjectPosition target, ItemStack staffItem) {
-                if (target.entityHit != null) {
-                    Entity entity = target.entityHit;
-
-                    if (entity instanceof EntityLiving) {
-                        EntityLiving living = (EntityLiving)entity;
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
-                    } else {
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
-                    }
-
-                    return true;
+            public boolean onRightClickEntity(ItemStack staffItem, EntityPlayer player, Entity target) {
+                if (target instanceof EntityLiving) {
+                    EntityLiving living = (EntityLiving)target;
+                    living.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
+                } else {
+                    target.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
                 }
 
-                return false;
+                return true;
             }
         });
 
         addEffectSymbol(new EffectSymbol("LeftClickKill") {
             @Override
-            public boolean onLeftClickTarget(EntityPlayer player, MovingObjectPosition target, ItemStack staffItem) {
-                if (target.entityHit != null) {
-                    Entity entity = target.entityHit;
-
-                    if (entity instanceof EntityLiving) {
-                        EntityLiving living = (EntityLiving)entity;
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
-                    } else {
-                        entity.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
-                    }
-
-                    return true;
+            public boolean onLeftClickEntity(ItemStack staffItem, EntityPlayer player, Entity target) {
+                if (target instanceof EntityLiving) {
+                    EntityLiving living = (EntityLiving)target;
+                    living.attackEntityFrom(DamageSource.causePlayerDamage(player), living.getMaxHealth());
+                } else {
+                    target.attackEntityFrom(DamageSource.causePlayerDamage(player), 1.0F);
                 }
 
-                return false;
+                return true;
             }
         });
 
         addEffectSymbol(new EffectSymbol("RightClickDelete") {
             @Override
-            public boolean onRightClickTarget(EntityPlayer player, MovingObjectPosition target, ItemStack staffItem) {
-                if (target.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && target.entityHit != null) {
-                    Entity entity = target.entityHit;
-                    entity.setDead();
-                    return true;
-                } else if (target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && target.getBlockPos() != null) {
-                    player.worldObj.setBlockToAir(target.getBlockPos());
+            public boolean onRightClickBlock(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+                worldIn.setBlockToAir(pos);
+                return true;
+            }
+
+            @Override
+            public boolean onRightClickEntity(ItemStack stack, EntityPlayer playerIn, Entity target) {
+                target.setDead();
+                return true;
+            }
+        });
+
+        addEffectSymbol(new EffectSymbol("RightClickFire") {
+
+            @Override
+            public boolean onRightClickBlock(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+                BlockPos targetPos = pos.offset(side);
+
+                if (!playerIn.canPlayerEdit(targetPos, side, stack)) {
+                    return false;
+                } else {
+                    if (worldIn.isAirBlock(targetPos)) {
+                        worldIn.playSoundEffect((double)targetPos.getX() + 0.5D, (double)targetPos.getY() + 0.5D, (double)targetPos.getZ() + 0.5D, "fire.ignite", 1.0F, playerIn.getRNG().nextFloat() * 0.4F + 0.8F);
+                        worldIn.setBlockState(targetPos, Blocks.fire.getDefaultState());
+                    }
+
                     return true;
                 }
+            }
 
-                return false;
+            @Override
+            public boolean onRightClickEntity(ItemStack stack, EntityPlayer playerIn, Entity target) {
+                target.setFire(5);
+                return true;
+            }
+        });
+
+        addEffectSymbol(new EffectSymbol("LeftClickFire") {
+            @Override
+            public boolean onLeftClickEntity(ItemStack stack, EntityPlayer playerIn, Entity target) {
+                target.setFire(5);
+                return true;
             }
         });
 
